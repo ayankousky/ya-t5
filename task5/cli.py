@@ -4,6 +4,7 @@ task5
 Usage:
   task5 hello
   task5 reqstat
+  task5 sizestat
   task5 -h | --help
   task5 --version
 
@@ -14,6 +15,7 @@ Options:
 Examples:
   task5 hello
   task5 reqstat
+  task5 sizestat
 
 Help:
   For help using this tool, please open an issue on the Github repository:
