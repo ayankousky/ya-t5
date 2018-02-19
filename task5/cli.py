@@ -2,16 +2,14 @@
 task5
 
 Usage:
-  task5 hello
+  task5 -h | --help
   task5 reqstat
   task5 sizestat
-  task5 -h | --help
-  task5 --version
-  task5 regularbyuser -f <csv_file_path> [--src_user <src_user>] [--src_ip <src_ip>] [--period <period in minutes>] [--duration <csv duration>] [--min_repeats <min request repeats>] [--empty]
+  task5 regularbyuser -f <csv_file_path> [--src_user <src_user>] [--period <period in minutes>] [--duration <csv duration>] [--min_repeats <min request repeats>] [--empty]
+  task5 regularbyip -f <csv_file_path> [--src_ip <src_ip>] [--period <period in minutes>] [--duration <csv duration>] [--min_repeats <min request repeats>] [--empty]
 
 Options:
   -h --help                                     Show this screen.
-  --version                                     Show version.
   -f <csv_file_path>                            Path to the journal. Required
   --src_user <src_user>                         Filter for src_user. Default: none (all entries in journal)
   --src_ip <src_ip>                             Filter for src_ip. Default: none (all entries in journal)
@@ -24,7 +22,10 @@ Examples:
   task5 hello
   task5 reqstat
   task5 sizestat
-  task5 regularbyuser
+  task5 regularbyuser -f ~/Desktop/shkib.csv --min_repeats 4 --duration 360 --period 2000  # this will run on every request
+  task5 regularbyuser -f ~/Desktop/shkib.csv --src_user c15cf96d9b56740c974661d209ef44f7 --min_repeats 4 --duration 360 --period 2000
+  task5 regularbyip -f ~/Desktop/shkib.csv --min_repeats 4 --duration 360 --period 2000
+  task5 regularbyip -f ~/Desktop/shkib.csv --src_ip 9ec3b27794d1d302fa04a94836249f4a --min_repeats 4 --duration 360 --period 2000
 Help:
   For help using this tool, please open an issue on the Github repository:
   https://github.com/rdegges/task5-cli
