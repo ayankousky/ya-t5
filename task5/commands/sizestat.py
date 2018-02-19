@@ -1,27 +1,25 @@
-"""The hello command."""
-
-from json import dumps
-
 from .base import Base
 import csv
 import operator
 
 
 class SizeStat(Base):
-	"""Say hello, world!"""
 
 	def run(self):
 		users = {}
-		# with open('/Users/alex/Desktop/short.csv', 'rb') as csvfile:
-		with open('/Users/alex/Desktop/shkib.csv', 'rb') as csvfile:
+		csv_path = self.options['-f']
+		empty = self.options['--empty']
+		with open(csv_path, 'rb') as csvfile:
 			journal = csv.reader(csvfile, delimiter=',', quotechar='|')
 			for row in journal:
 				if row[1] == '""src_user""':
+					continue
+				if not empty and row[1] is '':
 					continue
 				if users.get(row[1]):
 					users[row[1]] += int(row[7])
 				else:
 					users[row[1]] = 1
 			top_req_users = sorted(users.items(), key=operator.itemgetter(1), reverse=True)
-			for user in top_req_users[0:6]:
-				print user[0] +' '+str(users.get(user[0]))
+			for user in top_req_users[0:5]:
+				print 'src_user "' + user[0] + '" sent ' + str(users.get(user[0])) + ' bytes (' + str(users.get(user[0]) / 1024 / 1024) + 'Mb)'

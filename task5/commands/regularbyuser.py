@@ -1,5 +1,3 @@
-"""The hello command."""
-
 from .base import Base
 import csv
 import time
