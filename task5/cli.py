@@ -19,17 +19,17 @@ Options:
   --empty                                       Including empty (src_user or src_ip)
 
 Examples:
-  task5 reqstat -f ~/Desktop/shkib.csv [--empty]                                            # include empty to get add statistic for empty src_user requests
-  task5 sizestat -f ~/Desktop/shkib.csv [--empty]                                           # include empty to get add statistic for empty src_user requests
-  task5 regularbyuser -f ~/Desktop/shkib.csv --min_repeats 30 --duration 360 --period 2000  # Explanation: find every request which has been repeated at least for 6 hours (--period 360)
+  task5 reqstat -f ./shkib.csv [--empty]                                            # include empty to get add statistic for empty src_user requests
+  task5 sizestat -f ./shkib.csv [--empty]                                           # include empty to get add statistic for empty src_user requests
+  task5 regularbyuser -f ./shkib.csv --min_repeats 30 --duration 360 --period 2000  # Explanation: find every request which has been repeated at least for 6 hours (--period 360)
                                                                                             # and during this period there has been made at least 30 requests (--min_repeats 30)
                                                                                             # with accurasy 60 seconds: it means that requests 00:00:21 , 00:01:44, 00:02:22 are still periodic.
                                                                                             # But 00:04:45 will not be periodic (interval more than 1 minute)
                                                                                             # There where an option to specifiy an accuracy (but source code becomes ugly and performance changes dramatically)
                                                                                             # Add --src_user to find request by specific user
-  task5 regularbyuser -f ~/Desktop/shkib.csv --src_user c15cf96d9b56740c974661d209ef44f7 --min_repeats 4 --duration 360 --period 2000
-  task5 regularbyip -f ~/Desktop/shkib.csv --min_repeats 30 --duration 360 --period 2000
-  task5 regularbyip -f ~/Desktop/shkib.csv --src_ip 9ec3b27794d1d302fa04a94836249f4a --min_repeats 4 --duration 360 --period 2000
+  task5 regularbyuser -f ./shkib.csv --src_user c15cf96d9b56740c974661d209ef44f7 --min_repeats 4 --duration 360 --period 2000
+  task5 regularbyip -f ./shkib.csv --min_repeats 30 --duration 360 --period 2000
+  task5 regularbyip -f ./shkib.csv --src_ip 9ec3b27794d1d302fa04a94836249f4a --min_repeats 4 --duration 360 --period 2000
 Help:
   For help using this tool, please open an issue on the Github repository:
   https://github.com/ayankousky/ya-t5

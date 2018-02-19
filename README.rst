@@ -1,51 +1,96 @@
 task5-cli
 =========
 
-*A task5ton command line program in Python.*
+*CLI утилита (python 2.7) для 5-го задания в школу безопасности Яндекс*
 
 
-Purpose
--------
 
-This is a task5ton application which demonstrates how to properly structure a
-Python CLI application.
+Описание
+-----------
+### Как собрать приложение:
 
-I've done my best to structure this in a way that makes sense for *most* users,
-but if you have any feedback, please open a Github issue and I'll take a look.
-
-The idea with this project is that you should be able to use this as a template
-for building new CLI apps.
-
-You can fork this project and customize it to your liking, or just use it as a
-reference.
-
-
-Usage
------
-
-If you've cloned this project, and want to install the library (*and all
-development dependencies*), the command you'll want to run is::
-
+    $ sudo apt update
+    $ sudo apt install python-pip
     $ pip install -e .[test]
+    
+Получить помощь после установки:
 
-If you'd like to run all tests for this project (*assuming you've written
-some*), you would run the following command::
+    $ task5 --help
 
-    $ python setup.py test
+### Приложение собрано и готово к использованию на удаленном хосте:
+Либо можно просто:
 
-This will trigger `py.test <http://pytest.org/latest/>`_, along with its popular
-`coverage <https://pypi.python.org/pypi/pytest-cov>`_ plugin.
+    $ ssh guest@ya.alex-test-domain.net ## pwd: n2Z8jVYxs6LEnD3
+    $ cd ya-t5/
+    $ task5 regularbyip -f ./shkib.csv --src_ip 1ca1d9b4babe22220a23bce1899ec4be --min_repeats 30 --duration 900 --period 2000
+    
+### Описание для каждого задания
 
-Lastly, if you'd like to cut a new release of this CLI tool, and publish it to
-the Python Package Index (`PyPI <https://pypi.python.org/pypi>`_), you can do so
-by running::
+1) Поиск 5ти пользователей, сгенерировавших наибольшее количество запросов
 
-    $ python setup.py sdist bdist_wheel
-    $ twine upload dist/*
+     $ task5 reqstat -f ./shkib.csv --empty
 
-This will build both a source tarball of your CLI tool, as well as a newer wheel
-build (*and this will, by default, run on all platforms*).
+Результат:
+![alt text](https://api.monosnap.com/rpc/file/download?id=6VR8Amfl6DIvPL3AgbHLFoUSPlw8zR "Задание 1")
 
-The ``twine upload`` command (which requires you to install the `twine
-<https://pypi.python.org/pypi/twine>`_ tool) will then securely upload your
-new package to PyPI so everyone in the world can use it!
+2) Поиск 5ти пользователей, отправивших наибольшее количество данных
+
+     $ task5 sizestat -f ./shkib.csv --empty
+
+Результат:
+![alt text](https://api.monosnap.com/rpc/file/download?id=ioKm11dEEHu6k4lHPHCuKeNLTUW5iB "Задание 2")
+
+3) Поиск регулярных запросов (запросов выполняющихся периодически) по полю src_user
+
+Комментарий (для 3 и 4 заданий): очень сложно было выявить требования к этой задаче. Что сделано в решении: идет поиск запросов с определенным src_user полем. Пользователь задает сколько в сумме запросы должны длиться (сумма периодов между запросами). И минимальное количество запросов необходимое для того чтобы считать их периодическими. Запрос считается преодическим, по отношению к предыдущеме, если он был сделан через такое же время как и предыдуший ±1 минута т.е. запросы сделанные в __00:00:21__ , __00:01:44__, __00:02:22__  будут считаться периодическими т.к. интервал между ними 1 минута ±1 минута, а __00:04:36__ уже не будет — интервал > 2 минут. Тоже самое и для __00:00:21__ , __00:10:44__, __00:20:22__ — периодические (10 минут ±1 минута), __00:17:55__ — не входит в этот интервал.
+
+Изначально был имплементирован _accuracy_ параметр чтобы можно было увеличивать разброс с ±1 минута до ±1 секунда. Но это увеличивает время выполнения. Правильный подход — найти запросы по периоду _±1 минута_, а затем провести анализ по полученным данным с _±1 секунда_ интервалом, однако это чересчур уменьшает читаемость кода и, т.к. это пример для тестового задания, выбор был сделан выбор в пользу скорости выполнения и читаемости кода.
+
+Так же такие запросы делать лучше на распределнных системах используя соответствующие бд, но опять же, это лишь тестовое задание, поэтому сделан уклон в простоту
+
+
+     $ task5 regularbyuser -f ./shkib.csv --src_user ec0d21471f0feba0ff59b3e7c2cc548b --min_repeats 30 --duration 900 --period 2000
+
+Результат выполнение будет выведен в консоли: указан src_user значение и количество периодических запросов найденых для него. В текущей директория будет лежать подробный отчет _results.txt_. Используйте _more_, _cat_, _grep_ или другой инструмент для фильтра и поиска данных:
+![alt text](https://api.monosnap.com/rpc/file/download?id=ounlD2dB13sISACAluJ2700NR9pgKO "Задание 3 отчет")
+
+Результат в терминале:
+![alt text](https://api.monosnap.com/rpc/file/download?id=0r1TCO9DrQRRSuYS3iI4qYAQ5WD99k "Задание 3")
+
+Так же можно выполнить полный анализ:
+
+     $ task5 regularbyuser -f ./shkib.csv --min_repeats 30 --duration 900 --period 2000
+
+Результат в терминале:
+
+![alt text](https://api.monosnap.com/rpc/file/download?id=DGOx6j3CsptbOFQxWAKoJmxDRwPisW "Задание 3 полный анализ")
+
+В конце вывода можно увидеть время выполнения (≈2 минут для полного анализа и ≈10 секунд для анализа по одному ip)
+
+
+4) Поиск регулярных запросов (запросов выполняющихся периодически) по полю src_ip
+
+     $ task5 regularbyip -f ./shkib.csv --src_ip 1ca1d9b4babe22220a23bce1899ec4be --min_repeats 30 --duration 900 --period 2000
+
+Результат выполнение будет выведен в консоли: указан src_user значение и количество периодических запросов найденых для него. В текущей директория будет лежать подробный отчет _results.txt_. Используйте _more_, _cat_, _grep_ или другой инструмент для фильтра и поиска данных:
+![alt text](https://api.monosnap.com/rpc/file/download?id=1InX4xXbBk5qVOskClK6wGB4qrUbCI "Задание 4 отчет")
+
+Результат:
+![alt text](https://api.monosnap.com/rpc/file/download?id=d0Ufa41jrW1TJHTx4MhKvWB7vgZuku "Задание 4")
+
+Так же можно выполнить полный анализ:
+
+     $ task5 regularbyip -f ./shkib.csv  --min_repeats 30 --duration 900 --period 2000
+
+Результат:
+
+![alt text](https://api.monosnap.com/rpc/file/download?id=Qqktx3I1je1XGIqdqRKzPEfFHoQ9qs "Задание 4 полный анализ")
+
+5) Comming...
+
+### P.S.
+
+- Тесты выполнены на MacOS high siera. 8Gb ram, i5 processor. Y
+- Просьба выслать полное задание для пунктов 3-4. т.к. до сих пор есть сомнения задание понято правильно
+
+
